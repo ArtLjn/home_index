@@ -1,13 +1,16 @@
+// 控制台欢迎信息
 console.log('%c   /\\_/\\', 'color: #8B4513; font-size: 20px;');
 console.log('%c  ( o.o )', 'color: #8B4513; font-size: 20px;');
 console.log(' %c  > ^ <', 'color: #8B4513; font-size: 20px;');
 console.log('  %c /  ~ \\', 'color: #8B4513; font-size: 20px;');
 console.log('  %c/______\\', 'color: #8B4513; font-size: 20px;');
 
+// 禁用右键菜单
 document.addEventListener('contextmenu', function (event) {
     event.preventDefault();
 });
 
+// 项目卡片交互效果
 function handlePress(event) {
     this.classList.add('pressed');
 }
@@ -20,43 +23,37 @@ function handleCancel(event) {
     this.classList.remove('pressed');
 }
 
-var buttons = document.querySelectorAll('.projectItem');
-buttons.forEach(function (button) {
-    button.addEventListener('mousedown', handlePress);
-    button.addEventListener('mouseup', handleRelease);
-    button.addEventListener('mouseleave', handleCancel);
-    button.addEventListener('touchstart', handlePress);
-    button.addEventListener('touchend', handleRelease);
-    button.addEventListener('touchcancel', handleCancel);
+// 为项目卡片添加交互事件
+var projectCards = document.querySelectorAll('.project-card');
+projectCards.forEach(function (card) {
+    card.addEventListener('mousedown', handlePress);
+    card.addEventListener('mouseup', handleRelease);
+    card.addEventListener('mouseleave', handleCancel);
+    card.addEventListener('touchstart', handlePress);
+    card.addEventListener('touchend', handleRelease);
+    card.addEventListener('touchcancel', handleCancel);
 });
 
-function toggleClass(selector, className) {
-    var elements = document.querySelectorAll(selector);
-    elements.forEach(function (element) {
-        element.classList.toggle(className);
-    });
-}
-
+// 弹窗功能
 function pop(imageURL) {
-    var tcMainElement = document.querySelector(".tc-img");
+    const modalOverlay = document.getElementById('modal-overlay');
+    const modalImage = modalOverlay.querySelector('.modal-image');
+    
     if (imageURL) {
-        tcMainElement.src = imageURL;
+        modalImage.src = imageURL;
     }
-    toggleClass(".tc-main", "active");
-    toggleClass(".tc", "active");
+    
+    modalOverlay.classList.add('active');
 }
 
-var tc = document.getElementsByClassName('tc');
-var tc_main = document.getElementsByClassName('tc-main');
-tc[0].addEventListener('click', function (event) {
-    pop();
-});
-tc_main[0].addEventListener('click', function (event) {
-    event.stopPropagation();
+// 关闭弹窗
+document.getElementById('modal-overlay').addEventListener('click', function(event) {
+    if (event.target === this) {
+        this.classList.remove('active');
+    }
 });
 
-
-
+// Cookie 操作函数
 function setCookie(name, value, days) {
     var expires = "";
     if (days) {
@@ -82,35 +79,13 @@ function getCookie(name) {
     return null;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// 主题切换功能
 document.addEventListener('DOMContentLoaded', function () {
-
-
-
-
-
-
-    var html = document.querySelector('html');
-    var themeState = getCookie("themeState") || "Light";
-    var tanChiShe = document.getElementById("tanChiShe");
-
-
-
-
-
+    const html = document.querySelector('html');
+    const themeSwitch = document.getElementById('theme-switch');
+    const tanChiShe = document.getElementById("tanChiShe");
+    
+    let themeState = getCookie("themeState") || "Light";
 
     function changeTheme(theme) {
         tanChiShe.src = "./static/svg/snake-" + theme + ".svg";
@@ -119,14 +94,8 @@ document.addEventListener('DOMContentLoaded', function () {
         themeState = theme;
     }
 
-
-
-
-
-
-
-    var Checkbox = document.getElementById('myonoffswitch')
-    Checkbox.addEventListener('change', function () {
+    // 主题切换事件监听
+    themeSwitch.addEventListener('change', function () {
         if (themeState == "Dark") {
             changeTheme("Light");
         } else if (themeState == "Light") {
@@ -136,92 +105,28 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-
-
+    // 初始化主题状态
     if (themeState == "Dark") {
-        Checkbox.checked = false;
+        themeSwitch.checked = false;
+    } else {
+        themeSwitch.checked = true;
     }
 
     changeTheme(themeState);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   
-
-    // var fpsElement = document.createElement('div');
-    // fpsElement.id = 'fps';
-    // fpsElement.style.zIndex = '10000';
-    // fpsElement.style.position = 'fixed';
-    // fpsElement.style.left = '0';
-    // document.body.insertBefore(fpsElement, document.body.firstChild);
-
-    var showFPS = (function () {
-        var requestAnimationFrame = window.requestAnimationFrame ||
-            window.webkitRequestAnimationFrame ||
-            window.mozRequestAnimationFrame ||
-            window.oRequestAnimationFrame ||
-            window.msRequestAnimationFrame ||
-            function (callback) {
-                window.setTimeout(callback, 1000 / 60);
-            };
-
-        var fps = 0,
-            last = Date.now(),
-            offset, step, appendFps;
-
-        step = function () {
-            offset = Date.now() - last;
-            fps += 1;
-
-            if (offset >= 1000) {
-                last += offset;
-                appendFps(fps);
-                fps = 0;
-            }
-
-            requestAnimationFrame(step);
-        };
-
-        appendFps = function (fpsValue) {
-            fpsElement.textContent = 'FPS: ' + fpsValue;
-        };
-
-        step();
-    })();
-    
-    
-    
-    //pop('./static/img/tz.jpg')
-    
-    
-    
 });
 
-
-
-
+// 页面加载动画
 var pageLoading = document.querySelector("#zyyo-loading");
 window.addEventListener('load', function() {
     setTimeout(function () {
         pageLoading.style.opacity = '0';
+        setTimeout(() => {
+            pageLoading.style.display = 'none';
+        }, 500);
     }, 100);
 });
 
-// Typing Effect for Welcome Message
+// 打字机效果
 function typeWriter(element, text, speed = 50) {
     let i = 0;
     function type() {
@@ -231,20 +136,14 @@ function typeWriter(element, text, speed = 50) {
             setTimeout(type, speed);
         }
     }
-    element.innerHTML = ''; // Clear existing text
+    element.innerHTML = ''; // 清空现有文本
     type();
 }
 
-// Particle Background Effect
+// 粒子背景效果
 function createParticleBackground() {
     const canvas = document.createElement('canvas');
     canvas.id = 'particle-background';
-    canvas.style.position = 'fixed';
-    canvas.style.top = '0';
-    canvas.style.left = '0';
-    canvas.style.zIndex = '-1';
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
     document.body.insertBefore(canvas, document.body.firstChild);
 
     const ctx = canvas.getContext('2d');
@@ -252,15 +151,16 @@ function createParticleBackground() {
     canvas.height = window.innerHeight;
 
     const particles = [];
-    const particleCount = 100;
+    const particleCount = 50; // 减少粒子数量以提高性能
 
     class Particle {
         constructor() {
             this.x = Math.random() * canvas.width;
             this.y = Math.random() * canvas.height;
-            this.size = Math.random() * 3 + 1;
-            this.speedX = Math.random() * 3 - 1.5;
-            this.speedY = Math.random() * 3 - 1.5;
+            this.size = Math.random() * 2 + 1;
+            this.speedX = Math.random() * 2 - 1;
+            this.speedY = Math.random() * 2 - 1;
+            this.opacity = Math.random() * 0.5 + 0.2;
         }
 
         update() {
@@ -272,10 +172,13 @@ function createParticleBackground() {
         }
 
         draw() {
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.save();
+            ctx.globalAlpha = this.opacity;
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             ctx.fill();
+            ctx.restore();
         }
     }
 
@@ -297,83 +200,60 @@ function createParticleBackground() {
     init();
     animate();
 
+    // 窗口大小改变时重新调整画布
     window.addEventListener('resize', () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     });
 }
 
-// Snake Game Interaction
+// 贪吃蛇游戏交互
 function enhanceSnakeGame() {
     const snake = document.getElementById('tanChiShe');
-    let isHovering = false;
-    let rotation = 0;
-
+    if (!snake) return;
+    
+    // 移除旋转动画，只保留简单的悬停效果
     snake.addEventListener('mouseenter', () => {
-        isHovering = true;
-        rotateSnake();
+        snake.style.transform = 'scale(1.05)';
     });
 
     snake.addEventListener('mouseleave', () => {
-        isHovering = false;
+        snake.style.transform = 'scale(1)';
     });
-
-    function rotateSnake() {
-        if (!isHovering) return;
-        rotation += 45;
-        snake.style.transform = `rotate(${rotation}deg)`;
-        setTimeout(rotateSnake, 200);
-    }
 }
 
-// Skills Visualization
+// 技能可视化
 function animateSkills() {
     const skillPc = document.getElementById('skillPc');
     const skillWap = document.getElementById('skillWap');
 
-    skillPc.addEventListener('mouseenter', () => {
-        skillPc.style.transform = 'scale(1.1)';
-        skillPc.style.transition = 'transform 0.3s ease';
-    });
+    if (skillPc) {
+        skillPc.addEventListener('mouseenter', () => {
+            skillPc.style.transform = 'scale(1.05)';
+        });
 
-    skillPc.addEventListener('mouseleave', () => {
-        skillPc.style.transform = 'scale(1)';
-    });
-
-    skillWap.addEventListener('mouseenter', () => {
-        skillWap.style.transform = 'scale(1.1)';
-        skillWap.style.transition = 'transform 0.3s ease';
-    });
-
-    skillWap.addEventListener('mouseleave', () => {
-        skillWap.style.transform = 'scale(1)';
-    });
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    // Existing theme and other initialization code...
-
-    // New feature initializations
-    const welcomeText = document.querySelector('.welcome span');
-    if (welcomeText) {
-        typeWriter(welcomeText, welcomeText.textContent);
+        skillPc.addEventListener('mouseleave', () => {
+            skillPc.style.transform = 'scale(1)';
+        });
     }
 
-    createParticleBackground();
-    // enhanceSnakeGame();
-    animateSkills();
-});
+    if (skillWap) {
+        skillWap.addEventListener('mouseenter', () => {
+            skillWap.style.transform = 'scale(1.05)';
+        });
 
-// 页脚功能集合
-document.addEventListener('DOMContentLoaded', function() {
-    const footer = document.querySelector('footer');
+        skillWap.addEventListener('mouseleave', () => {
+            skillWap.style.transform = 'scale(1)';
+        });
+    }
+}
 
-    // 延迟显示页脚
-    setTimeout(() => {
-        footer.classList.add('visible');
-    }, 1000);
+// 页脚功能
+function initFooter() {
+    const footer = document.querySelector('.site-footer');
+    if (!footer) return;
 
-    // 每日一句诗功能
+    // 每日一句诗
     const poems = [
         "海内存知己，天涯若比邻。 - 李白",
         "衣带渐宽终不悔，为伊消得人憔悴。 - 柳永",
@@ -388,27 +268,20 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
 
     function displayDailyPoem() {
-        const poemEl = document.createElement('div');
-        poemEl.className = 'footer-poem';
-        
-        // 根据日期选择诗句，保证每天显示不同的诗
         const today = new Date();
         const poemIndex = today.getDate() % poems.length;
         
+        const poemEl = document.createElement('div');
+        poemEl.className = 'footer-poem';
         poemEl.innerHTML = `
             <span>📜 今日诗句</span>
             <p>${poems[poemIndex]}</p>
         `;
         
-        document.querySelector('footer').appendChild(poemEl);
-
-        // 延迟添加可见类
-        setTimeout(() => {
-            poemEl.classList.add('visible');
-        }, 1500);
+        footer.appendChild(poemEl);
     }
 
-    // 访问计数器（使用localStorage模拟）
+    // 访问计数器
     function updateVisitCounter() {
         let visits = localStorage.getItem('siteVisits') || 0;
         visits = parseInt(visits) + 1;
@@ -417,40 +290,19 @@ document.addEventListener('DOMContentLoaded', function() {
         const counterEl = document.createElement('div');
         counterEl.className = 'footer-counter';
         counterEl.innerHTML = `🚀 访问次数: ${visits}`;
-        document.querySelector('footer').appendChild(counterEl);
-
-        // 延迟添加可见类
-        setTimeout(() => {
-            counterEl.classList.add('visible');
-        }, 2000);
+        footer.appendChild(counterEl);
     }
 
-    // 动态背景效果
-    function createFooterParticles() {
-        const footer = document.querySelector('footer');
-        for (let i = 0; i < 50; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'footer-particle';
-            particle.style.left = `${Math.random() * 100}%`;
-            particle.style.animationDuration = `${Math.random() * 5 + 3}s`;
-            particle.style.opacity = 0;
-            footer.appendChild(particle);
-
-            // 延迟添加活跃类
-            setTimeout(() => {
-                particle.classList.add('active');
-            }, 2500);
-        }
-    }
-
-    // 执行功能
+    // 执行页脚功能
     displayDailyPoem();
     updateVisitCounter();
-    createFooterParticles();
-});
+}
 
-// 侧边栏动态功能
-document.addEventListener('DOMContentLoaded', function() {
+// 侧边栏功能
+function initSidebar() {
+    const leftSidebar = document.querySelector('.zyyo-left');
+    if (!leftSidebar) return;
+
     // 时间和日期显示
     function updateSidebarDateTime() {
         const dateTimeEl = document.createElement('div');
@@ -476,13 +328,202 @@ document.addEventListener('DOMContentLoaded', function() {
         updateTime();
         setInterval(updateTime, 1000);
         
-        const leftDiv = document.querySelector('.zyyo-left');
-        leftDiv.insertBefore(dateTimeEl, leftDiv.children[2]);
+        leftSidebar.insertBefore(dateTimeEl, leftSidebar.children[1]);
     }
 
-
-
-    // 执行功能
     updateSidebarDateTime();
+}
+
+// 社交链接工具提示
+function initSocialTooltips() {
+    const socialLinks = document.querySelectorAll('.social-link');
+    
+    socialLinks.forEach(link => {
+        const tooltip = link.querySelector('.tooltip');
+        if (tooltip) {
+            link.addEventListener('mouseenter', () => {
+                tooltip.style.opacity = '1';
+                tooltip.style.visibility = 'visible';
+            });
+            
+            link.addEventListener('mouseleave', () => {
+                tooltip.style.opacity = '0';
+                tooltip.style.visibility = 'hidden';
+            });
+        }
+    });
+}
+
+// 滚动动画
+function initScrollAnimations() {
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // 观察所有区块
+    const sections = document.querySelectorAll('.section-block');
+    sections.forEach(section => {
+        section.style.opacity = '0';
+        section.style.transform = 'translateY(30px)';
+        section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(section);
+    });
+}
+
+// 初始化所有功能
+document.addEventListener('DOMContentLoaded', function () {
+    // 基础功能初始化
+    createParticleBackground();
+    enhanceSnakeGame();
+    animateSkills();
+    initFooter();
+    initSidebar();
+    initSocialTooltips();
+    initScrollAnimations();
+
+    // 欢迎文本打字机效果
+    const welcomeText = document.querySelector('.welcome-text .gradient-text');
+    if (welcomeText) {
+        const originalText = welcomeText.textContent;
+        setTimeout(() => {
+            typeWriter(welcomeText, originalText, 100);
+        }, 1000);
+    }
+
+    // 技能图片响应式切换
+    function handleSkillImageSwitch() {
+        const skillPc = document.getElementById('skillPc');
+        const skillWap = document.getElementById('skillWap');
+        
+        if (window.innerWidth <= 768) {
+            if (skillPc) skillPc.style.display = 'none';
+            if (skillWap) skillWap.style.display = 'block';
+        } else {
+            if (skillPc) skillPc.style.display = 'block';
+            if (skillWap) skillWap.style.display = 'none';
+        }
+    }
+
+    handleSkillImageSwitch();
+    window.addEventListener('resize', handleSkillImageSwitch);
+});
+
+// 性能优化：减少重绘和回流
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+// 优化窗口大小改变事件
+window.addEventListener('resize', debounce(() => {
+    // 重新计算布局
+}, 250));
+
+// 初始化左侧边栏新功能
+function initSidebarFeatures() {
+    // 访问计数器
+    function updateVisitCounter() {
+        let visitCount = localStorage.getItem('visitCount') || 0;
+        visitCount = parseInt(visitCount) + 1;
+        localStorage.setItem('visitCount', visitCount);
+        
+        const visitElement = document.getElementById('visit-count');
+        if (visitElement) {
+            visitElement.textContent = visitCount;
+        }
+    }
+
+    // 在线时长计时器
+    function updateOnlineTime() {
+        let onlineTime = localStorage.getItem('onlineTime') || 0;
+        onlineTime = parseInt(onlineTime) + 1;
+        localStorage.setItem('onlineTime', onlineTime);
+        
+        const onlineElement = document.getElementById('online-time');
+        if (onlineElement) {
+            onlineElement.textContent = Math.floor(onlineTime / 60);
+        }
+    }
+
+    // 状态更新
+    function updateStatus() {
+        const statusElement = document.getElementById('current-status');
+        if (!statusElement) return;
+
+        const statuses = [
+            '正在摸鱼...',
+            '写代码中...',
+            '学习新技术...',
+            '喝咖啡中...',
+            '思考人生...',
+            '调试bug中...',
+            '看文档中...',
+            '开会中...',
+            '摸鱼摸鱼...',
+            '划水中...'
+        ];
+
+        const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+        statusElement.textContent = randomStatus;
+    }
+
+    // 每日一句
+    function updateDailyQuote() {
+        const quoteElement = document.getElementById('daily-quote-text');
+        const authorElement = document.querySelector('.quote-author');
+        
+        if (!quoteElement) return;
+
+        const quotes = [
+            { text: '代码改变世界，但首先改变自己。', author: '— 程序员语录' },
+            { text: '编程是一种艺术，调试是一种科学。', author: '— 编程哲学' },
+            { text: '最好的代码是没有代码。', author: '— 极简主义' },
+            { text: '学习编程最好的时间是十年前，其次是现在。', author: '— 时间哲学' },
+            { text: '代码如诗，简洁优雅。', author: '— 编程美学' },
+            { text: 'Bug是程序员的日常，修复是程序员的使命。', author: '— 调试哲学' },
+            { text: '技术改变生活，代码连接世界。', author: '— 技术愿景' },
+            { text: '每一次编译都是对完美的追求。', author: '— 编程精神' }
+        ];
+
+        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+        quoteElement.textContent = randomQuote.text;
+        if (authorElement) {
+            authorElement.textContent = randomQuote.author;
+        }
+    }
+
+    // 初始化功能
+    updateVisitCounter();
+    updateOnlineTime();
+    updateStatus();
+    updateDailyQuote();
+
+    // 设置定时器
+    setInterval(updateOnlineTime, 60000); // 每分钟更新在线时长
+    setInterval(updateStatus, 30000); // 每30秒更新状态
+    setInterval(updateDailyQuote, 300000); // 每5分钟更新每日一句
+}
+
+// 在DOM加载完成后初始化新功能
+document.addEventListener('DOMContentLoaded', function() {
+    // 延迟初始化，确保所有元素都已加载
+    setTimeout(initSidebarFeatures, 100);
 });
 
